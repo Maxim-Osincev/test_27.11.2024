@@ -34,7 +34,7 @@ const items = [
     id: 8,
     name: 'T-shirt 4'
   }
-]
+];
 
 export default {
   name: 'UserItems',
@@ -51,19 +51,42 @@ export default {
     addSelectedItem (item) {
       if (this.selectedItems.length >= 6) return;
       this.selectedItems.push(item);
-      const itemIdx = this.items.indexOf(item);
+      const itemIdx = this.getItemIndex(this.items, item);
       this.items.splice(itemIdx, 1);
-    }
+    },
+    removeSelectedItem (item) {
+      this.items.push(item);
+      const itemIdx = this.getItemIndex(this.selectedItems, item);
+      this.selectedItems.splice(itemIdx, 1);
+    },
+    getItemIndex (list, target) {
+      return list.indexOf(target);
+    },
   }
 }
 </script>
 
 <template>
   <div>
+    <div class="items__selected">
+      <div v-if="selectedItems.length" class="items__selected_list">
+        <div
+            v-for="item in selectedItems"
+            :key="item.id"
+            class="items__selected-item"
+            @click="removeSelectedItem(item)"
+        >
+          {{ item.name }}
+        </div>
+      </div>
+      <div>Selected: {{ selectedItems.length }} / 6</div>
+    </div>
     <items-list :items="items" @item-click="addSelectedItem" />
   </div>
 </template>
 
 <style scoped>
-
+.items__selected_list {
+  margin-bottom: 8px;
+}
 </style>
